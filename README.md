@@ -1,9 +1,9 @@
 # ColorStreaks
 A simple particle system.
 
-The dark side shows disappearing particles.
-The white side is a paintable canvas. 
+The dark side shows disappearing particles, the white side is a paintable canvas.
 This can be altered by editing the width and height of g2d.fillRect() under public void render();
+
 Setting the width/height to render.getWidth()/render.getHeight() will make the whole window dark. 
 Commenting out g2d.fillRect() will leave the window as a blank canvas.
 
