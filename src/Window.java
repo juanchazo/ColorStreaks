@@ -146,8 +146,8 @@ public class Window extends JFrame {
     public void renderParticles(Graphics2D g2d) {
         for (int i = 0; i < particles.size(); i++) {
             if (particles.get(i) != null) {
-                System.out.println(particles.get(i));
-                System.out.println(particles.size());
+                //System.out.println(particles.get(i));
+                //System.out.println(particles.size());
             particles.get(i).render(g2d);
             }
         }
