@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 
 public class Window extends JFrame {
 
-    private ArrayList<Particle> particles = new ArrayList<Particle>(100);
+    private ArrayList<Particle> particles = new ArrayList<Particle>(50);
 
     private int x = 0;
     private int y = 0;
@@ -35,10 +35,10 @@ public class Window extends JFrame {
     public void pollInput() {
         // Adds particles on mouse drag.
         render.addMouseMotionListener(new MouseMotionListener() {
-            public void mouseDragged(MouseEvent arg0) {
+            public void mouseDragged(MouseEvent e) {
                 // Adding more particles will slow down performance.
                 // Better optimization is required.
-                // The current hypothesis is sub-optimal garbage collection.
+                // Lowering the value of life helps but is not a fix.
                 addParticle();
                 addParticle();
             }
@@ -54,14 +54,14 @@ public class Window extends JFrame {
                 dy = (int) (Math.random() * 5 - 2.5);
                 // Size and life duration of particles.
                 int size = (int) (Math.random() * 12);
-                int life = (int) (Math.random() * (60) + 200);
+                int life = (int) (Math.random() * (20));
                 // Color cycling.
                 Color rainbow = Color.getHSBColor(h, s, b);
                 // Adds the new particle to the particle array list.
                 particles.add(new Particle(x, y, dx, dy, size, life, rainbow));
             }
 
-            public void mouseMoved(MouseEvent arg0) {
+            public void mouseMoved(MouseEvent e) {
             }
         });
     }
@@ -99,7 +99,6 @@ public class Window extends JFrame {
         while (true) {
             update();
             render();
-   
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
@@ -107,7 +106,6 @@ public class Window extends JFrame {
             }
         }
     }
-
     public void update() {
         Point p = render.getMousePosition();
         if (p != null) {
@@ -116,8 +114,10 @@ public class Window extends JFrame {
         }
         if (particles != null) {
             for (int i = 0; i <= particles.size() - 1; i++) {
-                if (particles.get(i).update())
-                    particles.remove(i);
+                if (particles.get(i) != null) {
+                    if (particles.get(i).update())
+                        particles.remove(i);
+                }
             }
         }
     }
@@ -127,7 +127,7 @@ public class Window extends JFrame {
             do {
                 Graphics2D g2d = (Graphics2D) bufferstrat.getDrawGraphics();
                 // Paints background of window.
-                //g2d.fillRect(0, 0, render.getWidth()/2, render.getHeight());
+                g2d.fillRect(0, 0, render.getWidth()/2, render.getHeight());
                 // Controls opacity of the graphics.
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
@@ -135,6 +135,7 @@ public class Window extends JFrame {
                         AlphaComposite.SRC_OVER, alpha));
 
                 renderParticles(g2d);
+                
 
                 g2d.dispose();
             } while (bufferstrat.contentsRestored());
@@ -144,7 +145,11 @@ public class Window extends JFrame {
 
     public void renderParticles(Graphics2D g2d) {
         for (int i = 0; i < particles.size(); i++) {
+            if (particles.get(i) != null) {
+                System.out.println(particles.get(i));
+                System.out.println(particles.size());
             particles.get(i).render(g2d);
+            }
         }
     }
 }
